@@ -1,28 +1,34 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Container v-if="connected"/>
+    <Connect v-else/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Connect from './components/Connect.vue'
+import Container from './components/Container.vue'
 
 export default {
   name: 'app',
+  computed: {
+    connected: function () {
+      if (localStorage.access_token) {
+        console.log("I'm in! " + localStorage.access_token)
+        return true
+      } 
+      console.log("Need to log in first.")
+      return false
+    }
+  },
   components: {
-    HelloWorld
+    Connect,
+    Container
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang='scss'>
+@import '../primitive/dist/css/main.min.css';
 </style>
