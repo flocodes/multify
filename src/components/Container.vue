@@ -1,24 +1,13 @@
 <template>
     <div>
-        <p>Connected to Spotify!</p>
         <input type="text" id="search" placeholder="Search for artists and tracks" v-on:input="search_timeout">
-        <!-- TODO: Only add onclick listener to parent. This does not work currently as clicks on <p> are registered as such and I cannot get the div's ID -->
-        <div v-for="suggestion in suggestions" v-on:click="add_seed" :id="suggestion.id"> <!-- v-bind:key="suggestion.id" (Cannot use as suggestions and seeds have same IDs)-->
-            <img v-if="suggestion.image" :src="suggestion.image" width=64 height=64>
-            <p>{{suggestion.name}}</p>
-        </div>
+        <Item v-for="suggestion in suggestions" v-bind:item="suggestion" v-on:item_clicked="add_seed" :key="suggestion.key"/>
         <h1>Seeds</h1>
-        <div v-for="seed in seeds" v-on:click="remove_seed" :id="seed.id"> <!-- v-bind:key="seed.id" -->
-            <img v-if="seed.image" :src="seed.image" width=64 height=64>
-            <p>{{seed.name}}</p>
-        </div>
+        <Item v-for="seed in seeds" v-bind:item="seed" v-on:item_clicked="remove_seed" :key="seed.key"/>
         <a class="button" v-if="enough_seeds" v-on:click="generate_playlist">Generate playlist!</a>
         <h1>Playlist</h1>
         <input type="text" id="playlist_title" hint="Playlist name" value="Multify" v-if="playlist_generated">
-        <div v-for="track in playlist" v-bind:key="track.id">
-            <img v-if="track.image" src="track.image" width=64 height=64>
-            <p>{{track.name}}</p>
-        </div>
+        <Item v-for="track in playlist" v-bind:item="track" :key="track.key"/>
         <a class="button" v-if="playlist_generated" v-on:click="add_to_account">Add to my account!</a>
         <p v-if="playlist_added">Playlist was added to your account.</p>
     </div>
@@ -26,9 +15,18 @@
 
 <script>
 import { clearTimeout } from 'timers';
-const axios = require('axios')
+import Item from './Item.vue'
+import {
+    get_suggestions,
+    get_recommendations,
+    add_playlist_to_account
+} from '../lib/common.js'
+
 export default {
     name: 'Container',
+    components: {
+        Item
+    },
     data: function () {
         return {
             suggestions: [],
@@ -57,57 +55,15 @@ export default {
         },
         search (event) {
             let query = event.target.value
-            if (query.length < 3) return
-            axios.get("https://api.spotify.com/v1/search", {
-                params: {
-                        q: query,
-                        type: 'artist,track',
-                        limit: 3
-                },
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.access_token
-                }
-            })
-            .then(function (response) {
-                console.log(response)
-                if (response.status != 200) {
-                    console.log("Error: Return code " + response.status + " -- " + response.statusText)
-                    return
-                }
-                let artists = response.data.artists.items
-                let tracks = response.data.tracks.items
-                let suggestions = []
-                for (let artist of artists) {
-                    suggestions.push({
-                        id: artist.id,
-                        type: 'artist',
-                        name: artist.name
-                    })
-                }
-                for (let track of tracks) {
-                    let track_artists = []
-                    for (let artist of track.artists) {
-                        track_artists.push(artist.name)
-                    }
-                    suggestions.push({
-                        id: track.id,
-                        type: 'track',
-                        name: track_artists.join(', ') + " - " + track.name
-                    })
-                }
-                console.log(suggestions)
+            if (query.length < 3) {
+                this.suggestions = []
+                return
+            }
+            get_suggestions(query).then((suggestions) => {
                 this.suggestions = suggestions
-            }.bind(this))
-            .catch(function (error) {
-                console.log(error)
             })
         },
-        add_seed (event) {
-            console.log(event)
-            let id = event.target.id
-            if (!id) {
-                id = event.target.parentElement.id
-            }
+        add_seed (id) {
             console.log("Adding to seeds: " + id)
             for (let seed of this.seeds) {
                 if (id == seed.id) {
@@ -118,7 +74,12 @@ export default {
             let seed = null
             for (let suggestion of this.suggestions) {
                 if (id == suggestion.id) {
-                    seed = suggestion
+                    seed = {
+                        key: "seed-" + suggestion.id,
+                        id: id,
+                        name: suggestion.name,
+                        type: suggestion.type
+                    }
                     break
                 }
             }
@@ -128,11 +89,7 @@ export default {
             }
             this.seeds.push(seed)
         },
-        remove_seed (event) {
-            let id = event.target.id
-            if (!id) {
-                id = event.target.parentElement.id
-            }
+        remove_seed (id) {
             console.log("Removing from seeds: " + id)
             let seeds = this.seeds.filter(function (item, index, arr) {
                 return item.id != id
@@ -141,103 +98,17 @@ export default {
             this.seeds = seeds
         },
         generate_playlist (event) {
-            console.log("Generating a playlist from " + this.seeds.length + " seeds: " + this.seeds.join(", "))
-            let seed_artists = []
-            let seed_tracks = []
-            for (let seed of this.seeds) {
-                if (seed.type == 'artist') {
-                    seed_artists.push(seed.id)
-                } else if (seed.type == 'track') {
-                    seed_tracks.push(seed.id)
-                }
-            }
-            axios.get("https://api.spotify.com/v1/recommendations", {
-                params: {
-                        limit: 20,
-                        seed_artists: seed_artists.join(','),
-                        seed_tracks: seed_tracks.join(',')
-                },
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.access_token
-                }
-            }).then(function (response) {
-                if (response.status != 200) {
-                    console.log("Error: Return code " + response.status + " -- " + response.statusText)
-                    return
-                }
-                let tracks = []
-                for (let track of response.data.tracks) {
-                    let track_artists = []
-                    for (let artist of track.artists) {
-                        track_artists.push(artist.name)
-                    }
-                    tracks.push({
-                        id: track.id,
-                        name: track_artists.join(', ') + ' - ' + track.name
-                    })
-                }
-                this.playlist = tracks
-            }.bind(this))
-            .catch(function (error) {
-                console.log(error)
+            console.log("Generating a playlist from " + this.seeds.length + " seeds")
+            get_recommendations(this.seeds).then((playlist) => {
+                this.playlist = playlist
             })
         },
+        // TODO: Get playlist name from input
         add_to_account (event) {
             console.log("Adding this playlist with " + this.playlist.length + " tracks to your account.")
-            axios.get('https://api.spotify.com/v1/me', {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.access_token
-                }
-            }).then(function(response) {
-                if (response.status != 200) {
-                    console.log("Error: Return code " + response.status + " -- " + response.statusText)
-                    return
-                }
-                let user_id = response.data.id
-                console.log("User ID is " + user_id)
-                this.id = user_id
-                let description = []
-                for (let seed of this.seeds) {
-                    description.push(seed.name)
-                }
-                // TODO: Get playlist name from input
-                axios.post('https://api.spotify.com/v1/users/' + user_id + '/playlists', 
-                    { name: 'Multify', public: false, description: 'Seeds: ' + description.join(', ') }, {
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.access_token,
-                        'Content-Type': 'application/json'
-                    }
-                }).then(function(response) {
-                    if (!(response.status == 200 || response.status == 201)) {
-                        console.log("Error: Return code " + response.status + " -- " + response.statusText)
-                        return
-                    }
-                    let playlist_id = response.data.id
-                    console.log("playlist id is " + playlist_id)
-                    let tracks = []
-                    for (let track of this.playlist) {
-                        tracks.push("spotify:track:" + track.id)
-                    }
-                    axios.post('https://api.spotify.com/v1/playlists/' + playlist_id + '/tracks', 
-                        { uris: tracks }, {
-                        headers: {
-                            'Authorization': 'Bearer ' + localStorage.access_token,
-                            'Content-Type': 'application/json'
-                        }
-                    }).then(function (response) {
-                        if (response.status != 201) {
-                            console.log("Error: Return code " + response.status + " -- " + response.statusText)
-                            return
-                        }
-                        console.log("Successfully added tracks to a new playlist.")
-                        this.playlist_added = true
-                    }.bind(this))
-                }.bind(this))
-            }.bind(this))
-            .catch(function (error) {
-                console.log(error)
+            add_playlist_to_account(this.playlist, 'Multify', this.seeds).then(() => {
+                this.playlist_added = true
             })
-            
         }
     }
 }

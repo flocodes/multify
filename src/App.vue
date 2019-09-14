@@ -14,10 +14,10 @@ export default {
   name: 'app',
   computed: {
     connected: function () {
-      if (localStorage.access_token) {
-        console.log("I'm in! " + localStorage.access_token)
+      let expiration_date = new Date(localStorage.expiration_date)
+      if (localStorage.access_token && (new Date() < expiration_date)) {
         return true
-      } 
+      }
       console.log("Need to log in first.")
       return false
     }
