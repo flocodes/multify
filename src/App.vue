@@ -29,6 +29,5 @@ export default {
 </script>
 
 <style lang='scss'>
-//@import '../primitive/dist/css/main.min.css';
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css"
 </style>
