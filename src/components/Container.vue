@@ -1,15 +1,21 @@
 <template>
     <div>
-        <input type="text" id="search" placeholder="Search for artists and tracks" v-on:input="search_timeout">
+        <input type="text" class="form-control mb-2" id="search" placeholder="Search for artists and tracks" v-on:input="search_timeout">
         <Item v-for="suggestion in suggestions" v-bind:item="suggestion" v-on:item_clicked="add_seed" :key="suggestion.key"/>
-        <h1>Seeds</h1>
+        <h1 class="mt-2">Seeds</h1>
         <Item v-for="seed in seeds" v-bind:item="seed" v-on:item_clicked="remove_seed" :key="seed.key"/>
-        <a class="button" v-if="enough_seeds" v-on:click="generate_playlist">Generate playlist!</a>
-        <h1>Playlist</h1>
-        <input type="text" id="playlist_title" hint="Playlist name" value="Multify" v-if="playlist_generated">
+        <button class="btn btn-primary my-2" v-if="enough_seeds" v-on:click="generate_playlist">Generate playlist</button>
+        <h1 class="mt-2">Playlist</h1>
+        <input type="text" class="form-control mb-2" id="playlist_title" hint="Playlist name" value="Multify" v-if="playlist_generated">
         <Item v-for="track in playlist" v-bind:item="track" :key="track.key"/>
-        <a class="button" v-if="playlist_generated" v-on:click="add_to_account">Add to my account!</a>
-        <p v-if="playlist_added">Playlist was added to your account.</p>
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <button class="btn btn-primary my-2" v-if="playlist_generated" v-on:click="add_to_account">Add to my account</button>
+            </div>
+            <div class="col-auto">
+                <p class="mb-0" v-if="playlist_added"><small>The playlist was added to your account.</small></p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -78,7 +84,9 @@ export default {
                         key: "seed-" + suggestion.id,
                         id: id,
                         name: suggestion.name,
-                        type: suggestion.type
+                        artists: suggestion.artists,
+                        type: suggestion.type,
+                        image: suggestion.image
                     }
                     break
                 }
@@ -105,8 +113,10 @@ export default {
         },
         // TODO: Get playlist name from input
         add_to_account (event) {
+            let playlist_name = document.querySelector('#playlist_title').value
+            if (!playlist_name) playlist_name = 'Multify'
             console.log("Adding this playlist with " + this.playlist.length + " tracks to your account.")
-            add_playlist_to_account(this.playlist, 'Multify', this.seeds).then(() => {
+            add_playlist_to_account(this.playlist, playlist_name, this.seeds).then(() => {
                 this.playlist_added = true
             })
         }

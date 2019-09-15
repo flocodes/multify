@@ -6,6 +6,14 @@ import {
     spotify_playlist_add_tracks
 } from './spotify.js'
 
+export const check_spotify_connection = () => {
+    let expiration_date = new Date(localStorage.expiration_date)
+      if (localStorage.access_token && (new Date() < expiration_date)) {
+        return true
+      }
+    return false
+}
+
 export const get_suggestions = (query) => {
     return new Promise((resolve, reject) => {
         spotify_search(query, ['artist', 'track'], 3).then((results) => {
@@ -17,7 +25,8 @@ export const get_suggestions = (query) => {
                     key: "suggestion-" + artist.id,
                     id: artist.id,
                     type: 'artist',
-                    name: artist.name
+                    name: artist.name,
+                    image: get_image(artist)
                 })
             }
             for (let track of tracks) {
@@ -29,7 +38,9 @@ export const get_suggestions = (query) => {
                     key: "suggestion-" + track.id,
                     id: track.id,
                     type: 'track',
-                    name: track_artists.join(', ') + " - " + track.name
+                    name: track.name,
+                    artists: track_artists.join(', '),
+                    image: get_image(track)
                 })
             }
             console.log(suggestions)
@@ -61,7 +72,9 @@ export const get_recommendations = (seeds) => {
                 playlist.push({
                     key: "track-" + track.id,
                     id: track.id,
-                    name: track_artists.join(', ') + ' - ' + track.name
+                    name: track.name,
+                    artists: track_artists.join(', '),
+                    image: get_image(track)
                 })
             }
             resolve(playlist)
@@ -78,7 +91,6 @@ export const add_playlist_to_account = (tracks, name, seeds) => {
             for (let seed of seeds) {
                 seed_names.push(seed.name)
             }
-            // TODO: Get playlist name from input
             spotify_create_playlist(user_id, name, 'Seeds: ' + seed_names.join(', ')).then((playlist_data) => {
                 let playlist_id = playlist_data.id
                 console.log("Playlist ID is " + playlist_id)
@@ -92,4 +104,25 @@ export const add_playlist_to_account = (tracks, name, seeds) => {
             })
         })
     })
+}
+
+var get_image = (item) => {
+    if (item.type == 'artist') {
+        return get_best_image(item.images)
+    } else if (item.type == 'track') {
+        return get_best_image(item.album.images)
+    } else {
+        console.log("Error: Invalid item type to get image: " + item.type)
+    }
+}
+
+var get_best_image = (images) => {
+    let min_size = 1000
+    let best_image = null
+    for (let image of images) {
+        if (image.height < min_size) {
+            best_image = image.url
+        }
+    }
+    return best_image
 }
