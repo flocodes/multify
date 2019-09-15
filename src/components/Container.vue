@@ -10,7 +10,12 @@
         <Item v-for="track in playlist" v-bind:item="track" v-on:item_clicked="play_track" :key="track.key"/>
         <p v-if="no_playlist && no_seeds">Add some seeds to generate a playlist.</p>
         <p v-else-if="no_playlist">Generate a playlist from your seeds by clicking the button above.</p>
-        <input type="text" class="form-control my-2" id="playlist_title" hint="Playlist name" value="Multify" v-if="playlist_generated">
+        <div class="input-group my-2" v-if="playlist_generated">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Playlist name</span>
+            </div>
+            <input type="text" class="form-control" id="playlist_title" hint="Playlist name" value="Multify">
+        </div>
         <div class="row align-items-center my-2">
             <div class="col-auto">
                 <button class="btn btn-spotify" v-if="playlist_generated" v-on:click="play_playlist">Play on Spotify</button> 
