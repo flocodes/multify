@@ -24,6 +24,7 @@ export const get_suggestions = (query) => {
                 suggestions.push({
                     key: "suggestion-" + artist.id,
                     id: artist.id,
+                    uri: artist.uri,
                     type: 'artist',
                     name: artist.name,
                     image: get_image(artist)
@@ -37,6 +38,7 @@ export const get_suggestions = (query) => {
                 suggestions.push({
                     key: "suggestion-" + track.id,
                     id: track.id,
+                    uri: track.uri,
                     type: 'track',
                     name: track.name,
                     artists: track_artists.join(', '),
@@ -72,6 +74,7 @@ export const get_recommendations = (seeds) => {
                 playlist.push({
                     key: "track-" + track.id,
                     id: track.id,
+                    uri: track.uri,
                     name: track.name,
                     artists: track_artists.join(', '),
                     image: get_image(track)
@@ -91,12 +94,12 @@ export const add_playlist_to_account = (tracks, name, seeds) => {
             for (let seed of seeds) {
                 seed_names.push(seed.name)
             }
-            spotify_create_playlist(user_id, name, 'Seeds: ' + seed_names.join(', ')).then((playlist_data) => {
+            spotify_create_playlist(user_id, name, 'Generated playlist from Multify. Seeds: ' + seed_names.join(', ')).then((playlist_data) => {
                 let playlist_id = playlist_data.id
                 console.log("Playlist ID is " + playlist_id)
                 let track_uris = []
                 for (let track of tracks) {
-                    track_uris.push("spotify:track:" + track.id)
+                    track_uris.push(track.uri)
                 }
                 spotify_playlist_add_tracks(playlist_id, track_uris).then((success) => {
                     resolve(success)

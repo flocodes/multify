@@ -116,6 +116,46 @@ export const spotify_playlist_add_tracks = (playlist_id, tracks) => {
     })
 }
 
+export const spotify_play_tracks = (uris) => {
+    return new Promise((resolve, reject) => {
+        axios.put('https://api.spotify.com/v1/me/player/play', {
+            uris: uris
+        }, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.access_token,
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            if (response.status != 204) {
+                let error_string = handle_error(response)
+                reject(error_string)
+            }
+            resolve(true)
+        }).catch(() => {
+            reject()
+        })
+    })
+}
+
+export const spotify_get_devices = () => {
+    return new Promise((resolve, reject) => {
+        axios.get('https://api.spotify.com/v1/me/player/devices', {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.access_token
+            }
+        }).then((response) => {
+            if (response.status != 200) {
+                let error_string = handle_error(response)
+                reject(error_string)
+            }
+            console.log(response)
+            resolve(response.devices)
+        }).catch(() => {
+            reject()
+        })
+    })
+}
+
 var handle_error = (response) => {
     let error_string = "Error: Return code " + response.status + " -- " + response.statusText
     console.log(error_string)
