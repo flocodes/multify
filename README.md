@@ -1,4 +1,4 @@
-# multifyjs
+# multify
 
 ## Project setup
 ```
