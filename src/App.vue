@@ -1,15 +1,21 @@
 <template>
-  <div class="container" id="app">
-    <div class="row justify-content-center my-3" id="logo-container">
-      <!-- <div class="col" id="logo-left"></div> -->
-      <div class="col-auto" id="logo">
-        <img alt="Multify logo" src="./assets/logo.jpg" width=100%>
+    <div id="app">
+      <div class="flex-container my-5" id="logo-container">
+        <div id="logo-left"></div>
+        <img src="./assets/logo.jpg" alt="multify">
+        <div id="logo-right"></div>
       </div>
-      <!-- <div class="col" id="logo-right"></div> -->
+      <Container v-if="connected"/>
+      <Connect v-else/>
+      <div class="flex-container my-3" id="hline-container">
+        <div id="hline-left"></div>
+        <img src="./assets/hlines/hline4.png">
+        <div id="hline-right"></div>
+      </div>
+      <div class="container mb-3">
+        <small>MULTIFY is an <a href="https://github.com/TODO">open source app</a> which runs completely in your browser. We do not store any of your data.</small>
+      </div>
     </div>
-    <Container v-if="connected"/>
-    <Connect v-else/>
-  </div>
 </template>
 
 <script>
@@ -32,23 +38,39 @@ export default {
 
 <style lang='scss'>
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-
-#logo {
-  width: 50%;
-  height: auto;
+.flex-container {
+  display: flex;
 }
-/*
-#logo-left {
-  width: 25%;
-  height: auto;
-  background: url("./assets/logo-left.jpg") repeat-x;
+.flex-container > div {
+  flex: 1;
+  background-repeat: repeat-x;
+}
+.flex-container > img {
+  max-width: 100%;
+  display: block;
+}
+#logo-container > div {
   background-size: auto 100px;
+}
+#logo-left {
+  background-image: url("./assets/logo-left.jpg");
+}
+#logo-container > img {
+  max-height: 100px;
 }
 #logo-right {
-  width: 25%;
-  height: auto;
-  background: url("./assets/logo-right.jpg") repeat-x;
-  background-size: auto 100px;
+  background-image: url("./assets/logo-right.jpg");
 }
-*/
+#hline-container > div {
+  background-size: auto 20px;
+}
+#hline-left {
+  background-image: url("./assets/hlines/hline4-left.png");
+}
+#hline-container > img {
+  max-height: 20px;
+}
+#hline-right {
+  background-image: url("./assets/hlines/hline4-right.png");
+}
 </style>

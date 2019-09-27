@@ -1,33 +1,44 @@
 <template>
     <div>
-        <input type="text" class="form-control mb-2" id="search" placeholder="Search for artists and tracks" v-on:input="search_timeout">
-        <Item v-for="suggestion in suggestions" v-bind:item="suggestion" v-on:item_clicked="add_seed" :key="suggestion.key"/>
-        <h1 class="mt-2">Seeds</h1>
-        <Item v-for="seed in seeds" v-bind:item="seed" v-on:item_clicked="remove_seed" :key="seed.key"/>
-        <p v-if="no_seeds">Add some seeds by searching for artists and tracks above.</p>
-        <button class="btn btn-primary my-2" v-if="enough_seeds" v-on:click="generate_playlist">Generate playlist</button>
-        <h1 class="my-2">Playlist</h1>
-        <Item v-for="track in playlist" v-bind:item="track" v-on:item_clicked="play_track" :key="track.key"/>
-        <p v-if="no_playlist && no_seeds">Add some seeds to generate a playlist.</p>
-        <p v-else-if="no_playlist">Generate a playlist from your seeds by clicking the button above.</p>
-        <div class="input-group my-2" v-if="playlist_generated">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Playlist name</span>
-            </div>
-            <input type="text" class="form-control" id="playlist_title" hint="Playlist name" value="Multify">
+        <div class="container">
+            <input type="text" class="form-control mb-2" id="search" placeholder="Search for artists and tracks" v-on:input="search_timeout">
+            <Item v-for="suggestion in suggestions" v-bind:item="suggestion" v-on:item_clicked="add_seed" :key="suggestion.key"/>
         </div>
-        <div class="row align-items-center my-2">
-            <div class="col-auto">
-                <button class="btn btn-spotify" v-if="playlist_generated" v-on:click="play_playlist">Play on Spotify</button> 
+        <div class="container">
+            <h1 class="mt-3">Seeds</h1>
+            <Item v-for="seed in seeds" v-bind:item="seed" v-on:item_clicked="remove_seed" :key="seed.key"/>
+            <p v-if="no_seeds">Add some seeds by searching for artists and tracks above.</p>
+            <button class="btn btn-primary mt-2" v-if="enough_seeds" v-on:click="generate_playlist">Generate playlist</button>
+        </div>
+        <div class="hline my-3">
+            <div class="hline-side" id="hline-search-left"></div>
+            <img src="../assets/hlines/hline1.png">
+            <div class="hline-side" id="hline-search-right"></div>
+        </div>
+        <div class="container">
+            <h1 class="mb-2">Playlist</h1>
+            <Item v-for="track in playlist" v-bind:item="track" v-on:item_clicked="play_track" :key="track.key"/>
+            <p v-if="no_playlist && no_seeds">Add some seeds to generate a playlist.</p>
+            <p v-else-if="no_playlist">Generate a playlist from your seeds by clicking the button above.</p>
+            <div class="input-group my-2" v-if="playlist_generated">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Playlist name</span>
+                </div>
+                <input type="text" class="form-control" id="playlist_title" hint="Playlist name" value="Multify">
             </div>
-            <div class="col-auto">
-                <button class="btn btn-primary" v-if="playlist_generated" v-on:click="add_to_account">Add to my account</button>
-            </div>
-            <div class="col-auto" v-if="playlist_added || play_error">
-                <p class="mb-0">
-                    <small v-if="playlist_added">The playlist was added to your account.</small>
-                    <small class="text-danger" v-else-if="play_error">{{play_error}}</small>
-                </p>
+            <div class="row align-items-center mt-2">
+                <div class="col-auto">
+                    <button class="btn btn-spotify" v-if="playlist_generated" v-on:click="play_playlist">Play on Spotify</button> 
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" v-if="playlist_generated" v-on:click="add_to_account">Add to my account</button>
+                </div>
+                <div class="col-auto" v-if="playlist_added || play_error">
+                    <p class="mb-0">
+                        <small v-if="playlist_added">The playlist was added to your account.</small>
+                        <small class="text-danger" v-else-if="play_error">{{play_error}}</small>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -173,5 +184,25 @@ export default {
 .btn-spotify:hover {
     color: white;
     background-color: #1AA249;
+}
+.hline {
+    display: flex;
+}
+.hline-side {
+    flex: 1;
+    background-size: auto 20px;
+}
+.hline > img {
+    max-height: 20px;
+    max-width: 100%;
+    display: block;
+}
+#hline-search-left {
+    background-image: url("../assets/hlines/hline1-left.png");
+    background-repeat: repeat-x;
+}
+#hline-search-right {
+    background-image: url("../assets/hlines/hline1-right.png");
+    background-repeat: repeat-x;
 }
 </style>
