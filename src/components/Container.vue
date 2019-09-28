@@ -10,7 +10,7 @@
                 <Item v-for="seed in seeds" v-bind:item="seed" v-on:item_clicked="remove_seed" :key="seed.key"/>
             </transition-group>
             <p v-if="no_seeds">Add some seeds by searching for artists and tracks above.</p>
-            <button v-else class="btn btn-primary mt-2" v-on:click="generate_playlist">Generate playlist</button>
+            <Recommender v-else class="mt-3" v-on:generate_playlist="generate_playlist"/>
         </div>
         <div class="flex-container hline-container my-3">
             <div id="hline-search-left"></div>
@@ -24,13 +24,13 @@
             </transition-group>
             <p v-if="no_playlist && no_seeds">Add some seeds to generate a playlist.</p>
             <p v-else-if="no_playlist">Generate a playlist from your seeds by clicking the button above.</p>
-            <div class="input-group my-2" v-if="playlist_generated">
+            <div class="input-group my-3" v-if="playlist_generated">
                 <div class="input-group-prepend">
                     <span class="input-group-text">Playlist name</span>
                 </div>
                 <input type="text" class="form-control" id="playlist_title" hint="Playlist name" value="Multify">
             </div>
-            <div class="row align-items-center mt-2">
+            <div class="row align-items-center">
                 <div class="col-auto">
                     <button class="btn btn-darkgreen btn-spotify" v-if="playlist_generated" v-on:click="play_playlist">Play on Spotify</button> 
                 </div>
@@ -51,6 +51,7 @@
 <script>
 import { clearTimeout } from 'timers';
 import Item from './Item.vue'
+import Recommender from './Recommender.vue'
 import {
     get_suggestions,
     get_recommendations,
@@ -63,7 +64,8 @@ import {
 export default {
     name: 'Container',
     components: {
-        Item
+        Item,
+        Recommender
     },
     data: function () {
         return {
@@ -144,9 +146,10 @@ export default {
             })
             this.seeds = seeds
         },
-        generate_playlist () {
+        generate_playlist (settings) {
             console.log("Generating a playlist from " + this.seeds.length + " seeds")
-            get_recommendations(this.seeds).then((playlist) => {
+            console.log(settings)
+            get_recommendations(this.seeds, settings).then((playlist) => {
                 this.playlist = playlist
             })
         },

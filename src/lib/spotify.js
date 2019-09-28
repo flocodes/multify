@@ -32,11 +32,11 @@ export const spotify_search = (query, types=['artist', 'track', 'album', 'playli
     })
 }
 
-export const spotify_recommend = (seed_artists, seed_tracks) => {
+export const spotify_recommend = (seed_artists, seed_tracks, settings) => {
     return new Promise((resolve, reject) => {
         axios.get("https://api.spotify.com/v1/recommendations", {
             params: {
-                limit: 20,
+                limit: settings.limit,
                 market: 'from_token',
                 seed_artists: seed_artists.join(','),
                 seed_tracks: seed_tracks.join(',')

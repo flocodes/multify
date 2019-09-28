@@ -53,7 +53,7 @@ export const get_suggestions = (query) => {
     })
 }
 
-export const get_recommendations = (seeds) => {
+export const get_recommendations = (seeds, settings) => {
     return new Promise((resolve, reject) => {
         let seed_artists = []
         let seed_tracks = []
@@ -66,7 +66,7 @@ export const get_recommendations = (seeds) => {
                 console.log("Error: Invalid seed type " + seed.type)
             }
         }
-        spotify_recommend(seed_artists, seed_tracks).then((tracks) => {
+        spotify_recommend(seed_artists, seed_tracks, settings).then((tracks) => {
             let playlist = []
             for (let track of tracks) {
                 let track_artists = []

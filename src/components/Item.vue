@@ -6,8 +6,8 @@
             <!-- Artist name or track name and its artists -->
             <div class="col spotify-item-content" v-on:click="$emit('item_clicked', item)">
                 <div class="pr-3">
-                    <p class="mb-0 hide-overflow" v-on:click="$emit('item_clicked', item)">{{item.name}}</p>
-                    <small v-if="item.type == 'track' || item.type == 'pl_track'" class="mb-0 text-muted hide-overflow" v-on:click="$emit('item_clicked', item)">{{item.artists}}</small>
+                    <p class="mb-0 hide-overflow">{{item.name}}</p>
+                    <small v-if="item.type == 'track' || item.type == 'pl_track'" class="mb-0 text-muted hide-overflow">{{item.artists}}</small>
                 </div>
             </div>
             <!-- Play button to play the item -->
@@ -19,7 +19,7 @@
         <div class="row mb-0 px-3">
             <div class="col-auto" style="width:64px;"></div>
             <div class="col" v-if="play_error">
-                <small class="mb-0 text-danger">Cannot play this track. Launch Spotify and listen to something, then it should work.</small>
+                <small class="mb-0 text-danger">Cannot play this. Launch Spotify and listen to something, then it should work.</small>
             </div>
         </div>
     </div>
