@@ -8,7 +8,8 @@ export const spotify_search = (query, types=['artist', 'track', 'album', 'playli
             params: {
                 q: query,
                 type: types.join(','),
-                limit: limit
+                limit: limit,
+                //market: 'from_token'
             },
             headers: {
                 'Authorization': 'Bearer ' + localStorage.access_token
@@ -36,6 +37,7 @@ export const spotify_recommend = (seed_artists, seed_tracks) => {
         axios.get("https://api.spotify.com/v1/recommendations", {
             params: {
                 limit: 20,
+                market: 'from_token',
                 seed_artists: seed_artists.join(','),
                 seed_tracks: seed_tracks.join(',')
             },
@@ -148,8 +150,29 @@ export const spotify_get_devices = () => {
                 let error_string = handle_error(response)
                 reject(error_string)
             }
-            console.log(response)
-            resolve(response.devices)
+            resolve(response.data.devices)
+        }).catch(() => {
+            reject()
+        })
+    })
+}
+
+export const spotify_artist_top_tracks = (uri) => {
+    let id = uri.split(':').slice(-1)[0]
+    return new Promise((resolve, reject) => {
+        axios.get('https://api.spotify.com/v1/artists/' + id + '/top-tracks', {
+            params: {
+                country: 'from_token'
+            },
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.access_token
+            }
+        }).then((response) => {
+            if (response.status != 200) {
+                let error_string = handle_error(response)
+                reject(error_string)
+            }
+            resolve(response.data.tracks)
         }).catch(() => {
             reject()
         })

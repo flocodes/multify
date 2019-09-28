@@ -7,25 +7,26 @@
             <div class="col spotify-item-content" v-on:click="$emit('item_clicked', item)">
                 <div class="pr-3">
                     <p class="mb-0 hide-overflow" v-on:click="$emit('item_clicked', item)">{{item.name}}</p>
-                    <small v-if="item.type == 'track'" class="mb-0 text-muted hide-overflow" v-on:click="$emit('item_clicked', item)">{{item.artists}}</small>
+                    <small v-if="item.type == 'track' || item.type == 'pl_track'" class="mb-0 text-muted hide-overflow" v-on:click="$emit('item_clicked', item)">{{item.artists}}</small>
                 </div>
             </div>
             <!-- Play button to play the item -->
             <div class="col-auto spotify-item-content play-button-container p-0">
-                <p class="play-button m-0 p-0" v-on:click="play_track(item.uri)">&#9654;</p>
+                <p class="play-button m-0 p-0" v-on:click="play_item(item)">&#9654;</p>
             </div>
         </div>
+        <!-- Hidden error message that is shown if there are errors playing a track on Spotify -->
         <div class="row mb-0 px-3">
-            <!-- Hidden error message that is shown if there are errors playing a track on Spotify -->
             <div class="col-auto" style="width:64px;"></div>
             <div class="col" v-if="play_error">
-                <small class="mb-0 text-danger">Cannot play this track. Launch Spotify and listen to something to fix this.</small>
+                <small class="mb-0 text-danger">Cannot play this track. Launch Spotify and listen to something, then it should work.</small>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import { play_artist_top_tracks } from '../lib/common.js'
 import { spotify_play_tracks } from '../lib/spotify.js'
 
 export default {
@@ -37,14 +38,24 @@ export default {
         }
     },
     methods: {
-        play_track (uri) {
-            spotify_play_tracks([uri]).then(() => {
-                console.log("Should now be playing " + uri)
-                this.play_error = false
-            }).catch(() => {
-                console.log("Could not play " + uri)
-                this.play_error = true
-            })
+        play_item (item) {
+            if (item.uri.startsWith("spotify:artist:")) {
+                play_artist_top_tracks(item.uri).then(() => {
+                    console.log("Should now be playing top tracks of " + item.uri)
+                    this.play_error = false
+                }).catch(() => {
+                    console.log("Could not play " + item.uri)
+                    this.play_error = true
+                })
+            } else if (item.uri.startsWith("spotify:track:")) {
+                spotify_play_tracks([item.uri]).then(() => {
+                    console.log("Should now be playing " + item.uri)
+                    this.play_error = false
+                }).catch(() => {
+                    console.log("Could not play " + item.uri)
+                    this.play_error = true
+                })
+            }
         }
     }
 }

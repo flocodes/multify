@@ -6,9 +6,11 @@
         </div>
         <div class="container">
             <h1 class="mt-3">Seeds</h1>
-            <Item v-for="seed in seeds" v-bind:item="seed" v-on:item_clicked="remove_seed" :key="seed.key"/>
+            <transition-group name="list">
+                <Item v-for="seed in seeds" v-bind:item="seed" v-on:item_clicked="remove_seed" :key="seed.key"/>
+            </transition-group>
             <p v-if="no_seeds">Add some seeds by searching for artists and tracks above.</p>
-            <button class="btn btn-primary mt-2" v-if="enough_seeds" v-on:click="generate_playlist">Generate playlist</button>
+            <button v-else class="btn btn-primary mt-2" v-on:click="generate_playlist">Generate playlist</button>
         </div>
         <div class="flex-container hline-container my-3">
             <div id="hline-search-left"></div>
@@ -17,7 +19,9 @@
         </div>
         <div class="container">
             <h1 class="mb-2">Playlist</h1>
-            <Item v-for="track in playlist" v-bind:item="track" v-on:item_clicked="play_track" :key="track.key"/>
+            <transition-group name="list">
+                <Item v-for="track in playlist" v-bind:item="track" v-on:item_clicked="play_track" :key="track.key"/>
+            </transition-group>
             <p v-if="no_playlist && no_seeds">Add some seeds to generate a playlist.</p>
             <p v-else-if="no_playlist">Generate a playlist from your seeds by clicking the button above.</p>
             <div class="input-group my-2" v-if="playlist_generated">
@@ -158,7 +162,7 @@ export default {
             spotify_play_tracks([item.uri]).then(() => {
                 this.play_error = ""
             }).catch(() => {
-                this.play_error = "Cannot play any tracks because you do not have an active Spotify session."
+                this.play_error = "Cannot play any tracks. Launch Spotify and listen to something, then it should work."
             })
         },
         play_playlist () {
@@ -169,7 +173,7 @@ export default {
             spotify_play_tracks(track_uris).then(() => {
                 this.play_error = ""
             }).catch(() => {
-                this.play_error = "Cannot play the playlist because you do not have an active Spotify session."
+                this.play_error = "Cannot play the playlist. Launch Spotify and listen to something, then it should work."
             })
         }
     }
@@ -186,5 +190,16 @@ export default {
 }
 #hline-search-right {
     background-image: url("../assets/hlines/hline1-right.png");
+}
+.list-enter-active, .list-leave-active {
+    transition: height .5s, opacity .5s;
+}
+.list-enter-to, .list-leave {
+    height: 64px;
+    opacity: 1;
+}
+.list-enter, .list-leave-to {
+    height: 0;
+    opacity: 0;
 }
 </style>

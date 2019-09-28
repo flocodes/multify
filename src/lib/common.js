@@ -3,7 +3,9 @@ import {
     spotify_recommend,
     spotify_user_profile,
     spotify_create_playlist,
-    spotify_playlist_add_tracks
+    spotify_playlist_add_tracks,
+    spotify_artist_top_tracks,
+    spotify_play_tracks
 } from './spotify.js'
 
 export const check_spotify_connection = () => {
@@ -75,7 +77,7 @@ export const get_recommendations = (seeds) => {
                     key: "track-" + track.id,
                     id: track.id,
                     uri: track.uri,
-                    type: 'track',
+                    type: 'pl_track',
                     name: track.name,
                     artists: track_artists.join(', '),
                     image: get_image(track)
@@ -106,6 +108,24 @@ export const add_playlist_to_account = (tracks, name, seeds) => {
                     resolve(success)
                 })
             })
+        })
+    })
+}
+
+export const play_artist_top_tracks = (uri) => {
+    return new Promise((resolve, reject) => {
+        spotify_artist_top_tracks(uri).then((tracks) => {
+            let uris = []
+            for (let track of tracks) {
+                uris.push(track.uri)
+            }
+            spotify_play_tracks(uris).then(() => {
+                resolve()
+            }).catch(() => {
+                reject()
+            })
+        }).catch(() => {
+            reject()
         })
     })
 }

@@ -2,19 +2,20 @@
 
 ## Fixes
 
-* Only one playing link for items in playlist (can currently play from Container and Item itself which show different error messages)
+* Remove console.log statements before release
 
 ## New features
 
-* Add play button to artist suggestions and seeds -> play top tracks
-* Add logo - continue logo stripes across whole width
+* Add playlist generation settings (limit, audio features)
+* Notify user that a suggestion has been added to seeds -> use error row below item
+* Notify user when max seeds reached -> use error row below item
 * Add footer (Spotify info, link to source, legal?)
-* Add playlist generation settings (limit, )
-* Notify user when max seeds reached
 * Add settings to adding playlist to account (public, ...?)
 * Transitions
+    * Issue: Animating list items makes content below jump.
 
 ## Maybe add
 
 * Add genre seeds?
 * Add user's top artists and tracks to suggestions? (scope!)
+* Only show play buttons when there is an active Spotify session? Need to tell user that they can play tracks from the app.
