@@ -10,10 +10,10 @@
             <p v-if="no_seeds">Add some seeds by searching for artists and tracks above.</p>
             <button class="btn btn-primary mt-2" v-if="enough_seeds" v-on:click="generate_playlist">Generate playlist</button>
         </div>
-        <div class="hline my-3">
-            <div class="hline-side" id="hline-search-left"></div>
+        <div class="flex-container hline-container my-3">
+            <div id="hline-search-left"></div>
             <img src="../assets/hlines/hline1.png">
-            <div class="hline-side" id="hline-search-right"></div>
+            <div id="hline-search-right"></div>
         </div>
         <div class="container">
             <h1 class="mb-2">Playlist</h1>
@@ -28,7 +28,7 @@
             </div>
             <div class="row align-items-center mt-2">
                 <div class="col-auto">
-                    <button class="btn btn-spotify" v-if="playlist_generated" v-on:click="play_playlist">Play on Spotify</button> 
+                    <button class="btn btn-darkgreen btn-spotify" v-if="playlist_generated" v-on:click="play_playlist">Play on Spotify</button> 
                 </div>
                 <div class="col-auto">
                     <button class="btn btn-primary" v-if="playlist_generated" v-on:click="add_to_account">Add to my account</button>
@@ -176,33 +176,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang='scss'>
+@import "../scss/_variables";
 .btn-spotify {
-    background-color: #1DB954;
     color: white;
-}
-.btn-spotify:hover {
-    color: white;
-    background-color: #1AA249;
-}
-.hline {
-    display: flex;
-}
-.hline-side {
-    flex: 1;
-    background-size: auto 20px;
-}
-.hline > img {
-    max-height: 20px;
-    max-width: 100%;
-    display: block;
 }
 #hline-search-left {
     background-image: url("../assets/hlines/hline1-left.png");
-    background-repeat: repeat-x;
 }
 #hline-search-right {
     background-image: url("../assets/hlines/hline1-right.png");
-    background-repeat: repeat-x;
 }
 </style>

@@ -75,6 +75,7 @@ export const get_recommendations = (seeds) => {
                     key: "track-" + track.id,
                     id: track.id,
                     uri: track.uri,
+                    type: 'track',
                     name: track.name,
                     artists: track_artists.join(', '),
                     image: get_image(track)

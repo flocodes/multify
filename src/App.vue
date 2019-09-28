@@ -7,10 +7,10 @@
       </div>
       <Container v-if="connected"/>
       <Connect v-else/>
-      <div class="flex-container my-3" id="hline-container">
-        <div id="hline-left"></div>
+      <div class="flex-container hline-container my-3">
+        <div id="footer-hline-left"></div>
         <img src="./assets/hlines/hline4.png">
-        <div id="hline-right"></div>
+        <div id="footer-hline-right"></div>
       </div>
       <div class="container mb-3">
         <small>MULTIFY is an <a href="https://github.com/TODO">open source app</a> which runs completely in your browser. We do not store any of your data.</small>
@@ -37,7 +37,13 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+@import "scss/_variables.scss";
+$theme-colors: (
+  "primary": $color-global-darkblue,
+  "darkgreen": $color-global-darkgreen
+);
+@import "../node_modules/bootstrap/scss/bootstrap";
+// Global style for whole-width dividers
 .flex-container {
   display: flex;
 }
@@ -61,16 +67,16 @@ export default {
 #logo-right {
   background-image: url("./assets/logo-right.jpg");
 }
-#hline-container > div {
+.hline-container > div {
   background-size: auto 20px;
 }
-#hline-left {
-  background-image: url("./assets/hlines/hline4-left.png");
-}
-#hline-container > img {
+.hline-container > img {
   max-height: 20px;
 }
-#hline-right {
+#footer-hline-left {
+  background-image: url("./assets/hlines/hline4-left.png");
+}
+#footer-hline-right {
   background-image: url("./assets/hlines/hline4-right.png");
 }
 </style>

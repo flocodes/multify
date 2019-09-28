@@ -1,20 +1,25 @@
 <template>
-    <div :id="item.id">
-        <div class="row align-items-center mb-1 rounded-lg spotify-item clickable px-3" v-if="item.type === 'artist'">
-            <img class="col-1 rounded-circle spotify-artist-image p-0" v-if="item.image" v-on:click="$emit('item_clicked', item)" :src="item.image" width="100%" height="auto">
-            <p class="col my-0" v-on:click="$emit('item_clicked', item)">{{item.name}}</p>
+    <div :id="item.id" class="mb-1">
+        <div class="row mb-0 rounded-lg spotify-item clickable px-3">
+            <!-- Artist or track image -->
+            <img v-bind:class="['col-auto', 'p-0', 'spotify-' + item.type + '-image']" :src="item.image" v-on:click="$emit('item_clicked', item)">
+            <!-- Artist name or track name and its artists -->
+            <div class="col spotify-item-content" v-on:click="$emit('item_clicked', item)">
+                <div class="pr-3">
+                    <p class="mb-0 hide-overflow" v-on:click="$emit('item_clicked', item)">{{item.name}}</p>
+                    <small v-if="item.type == 'track'" class="mb-0 text-muted hide-overflow" v-on:click="$emit('item_clicked', item)">{{item.artists}}</small>
+                </div>
+            </div>
+            <!-- Play button to play the item -->
+            <div class="col-auto spotify-item-content play-button-container p-0">
+                <p class="play-button m-0 p-0" v-on:click="play_track(item.uri)">&#9654;</p>
+            </div>
         </div>
-        <div class="row align-items-center mb-1 spotify-item rounded-lg px-3" v-else>
-            <img class="col-1 clickable spotify-track-image p-0" v-if="item.image" v-on:click="$emit('item_clicked', item)" :src="item.image" width="100%" height="auto">
-            <div class="col clickable">
-                <p class="mb-0" v-on:click="$emit('item_clicked', item)">{{item.name}}</p>
-                <p class="mb-0 text-muted" v-on:click="$emit('item_clicked', item)"><small>{{item.artists}}</small></p>
-            </div>
-            <div class="col-auto">
-                <p class="mb-0 text-danger" v-if="play_error"><small>Cannot play this track because you do not have an active Spotify session.</small></p>
-            </div>
-            <div class="col-1 clickable">
-                <p class="my-2 play-button" v-on:click="play_track(item.uri)">&#9654;</p>
+        <div class="row mb-0 px-3">
+            <!-- Hidden error message that is shown if there are errors playing a track on Spotify -->
+            <div class="col-auto" style="width:64px;"></div>
+            <div class="col" v-if="play_error">
+                <small class="mb-0 text-danger">Cannot play this track. Launch Spotify and listen to something to fix this.</small>
             </div>
         </div>
     </div>
@@ -45,25 +50,62 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang='scss'>
+@import "../scss/_variables.scss";
+$item-size: 64px;
+$play-button-size: 48px;
 .clickable {
     cursor: pointer;
 }
+.spotify-item {
+    height: $item-size;
+    transition: background-color .3s;
+}
 .spotify-item:hover {
-    background-color: #EEE;
+    background-color: $color-global-grey;
+}
+.spotify-item-content {
+    height: $item-size;
+    position: relative;
+}
+.spotify-item-content > div, .spotify-item-content > p {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+.play-button-container {
+    width: $play-button-size;
 }
 .play-button {
+    height: $play-button-size;
+    line-height: $play-button-size;
+    width: $play-button-size;
+    padding-left: 0;
+    padding-right: 0;
     font-family:'Courier New', Courier, monospace;
+    color: $color-global-darkgreen;
+    border-radius: 50%;
+    text-align: center;
+    transition: background-color .5s, color .5s;
 }
 .play-button:hover {
-    color: #1DB954;
+    background-color: $color-global-darkgreen;
+    color: $color-global-grey;
 }
-.spotify-item {
-    height: 64px;
-}
-.spotify-track-image,.spotify-artist-image {
-    max-width: 64px;
+.spotify-track-image, .spotify-artist-image {
+    max-width: $item-size;
     height: 100%;
     object-fit: cover;
+}
+.spotify-artist-image {
+    border-radius: 50%;
+}
+.hide-overflow {
+    display: block;
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>
