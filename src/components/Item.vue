@@ -10,6 +10,11 @@
                     <small v-if="item.type == 'track' || item.type == 'pl_track'" class="mb-0 text-muted hide-overflow">{{item.artists}}</small>
                 </div>
             </div>
+            <transition name="fade">
+                <div v-if="item.in_seeds" class="col-auto my-auto in-seeds-marker-container mr-2 px-0">
+                    <small class="in-seeds-marker">&#10004;</small>
+                </div>
+            </transition>
             <!-- Play button to play the item -->
             <div v-if="item.type == 'artist' || item.type == 'track'" class="col-auto spotify-item-content play-button-container p-0">
                 <p class="play-button m-0 p-0" v-on:click="play_item(item)">&#9654;</p>
@@ -64,7 +69,8 @@ export default {
 <style scoped lang='scss'>
 @import "../scss/_variables.scss";
 $item-size: 64px;
-$play-button-size: 48px;
+$play-button-size: 40px;
+$in-seeds-size: 24px;
 .spotify-item {
     height: $item-size;
     transition: background-color .3s;
@@ -76,7 +82,7 @@ $play-button-size: 48px;
     height: $item-size;
     position: relative;
 }
-.spotify-item-content > div, .spotify-item-content > p {
+.spotify-item-content > div, .spotify-item-content > p, .text-white {
     position: absolute;
     width: 100%;
     top: 50%;
@@ -115,5 +121,23 @@ $play-button-size: 48px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.in-seeds-marker {
+    color: white;
+    font-family:'Courier New', Courier, monospace;
+    line-height: $in-seeds-size;
+}
+.in-seeds-marker-container {
+    background-color: $color-global-green;
+    width: $in-seeds-size;
+    height: $in-seeds-size;
+    border-radius: 50%;
+    text-align: center;
+}
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0;
 }
 </style>

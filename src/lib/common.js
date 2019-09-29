@@ -47,7 +47,6 @@ export const get_suggestions = (query) => {
                     image: get_image(track)
                 })
             }
-            console.log(suggestions)
             resolve(suggestions)
         })
     })

@@ -107,6 +107,16 @@ export default {
                 return
             }
             get_suggestions(query).then((suggestions) => {
+                for (let suggestion of suggestions) {
+                    suggestion['in_seeds'] = false
+                    for (let seed of this.seeds) {
+                        if (seed.uri == suggestion.uri) {
+                            suggestion['in_seeds'] = true
+                            break
+                        }
+                    }
+                }
+                console.log(suggestions)
                 this.suggestions = suggestions
             })
         },
@@ -136,6 +146,7 @@ export default {
                 console.log("Could not find URI " + uri + " in suggestions")
                 return
             }
+            item.in_seeds = true
             seed.key = 'seed-' + seed.id
             this.seeds.push(seed)
         },
@@ -145,6 +156,11 @@ export default {
                 return seed.uri != item.uri
             })
             this.seeds = seeds
+            for (let suggestion of this.suggestions) {
+                if (suggestion.uri == item.uri) {
+                    suggestion.in_seeds = false
+                }
+            }
         },
         generate_playlist (settings) {
             console.log("Generating a playlist from " + this.seeds.length + " seeds")
