@@ -11,7 +11,7 @@
                 </div>
             </div>
             <!-- Play button to play the item -->
-            <div class="col-auto spotify-item-content play-button-container p-0">
+            <div v-if="item.type == 'artist' || item.type == 'track'" class="col-auto spotify-item-content play-button-container p-0">
                 <p class="play-button m-0 p-0" v-on:click="play_item(item)">&#9654;</p>
             </div>
         </div>
@@ -65,9 +65,6 @@ export default {
 @import "../scss/_variables.scss";
 $item-size: 64px;
 $play-button-size: 48px;
-.clickable {
-    cursor: pointer;
-}
 .spotify-item {
     height: $item-size;
     transition: background-color .3s;
@@ -105,7 +102,7 @@ $play-button-size: 48px;
     color: $color-global-grey;
 }
 .spotify-track-image, .spotify-artist-image {
-    max-width: $item-size;
+    width: $item-size;
     height: 100%;
     object-fit: cover;
 }

@@ -22,6 +22,7 @@
 import Connect from './components/Connect.vue'
 import Container from './components/Container.vue'
 import { check_spotify_connection } from './lib/common.js'
+import 'bootstrap'
 export default {
   name: 'app',
   computed: {
@@ -78,5 +79,11 @@ $theme-colors: (
 }
 #footer-hline-right {
   background-image: url("./assets/hlines/hline4-right.png");
+}
+.btn-text-white {
+  color: white;
+}
+.clickable {
+  cursor: pointer;
 }
 </style>

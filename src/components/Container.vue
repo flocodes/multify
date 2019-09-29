@@ -32,7 +32,7 @@
             </div>
             <div class="row align-items-center">
                 <div class="col-auto">
-                    <button class="btn btn-darkgreen btn-spotify" v-if="playlist_generated" v-on:click="play_playlist">Play on Spotify</button> 
+                    <button class="btn btn-darkgreen btn-text-white" v-if="playlist_generated" v-on:click="play_playlist">Play on Spotify</button> 
                 </div>
                 <div class="col-auto">
                     <button class="btn btn-primary" v-if="playlist_generated" v-on:click="add_to_account">Add to my account</button>
@@ -148,7 +148,6 @@ export default {
         },
         generate_playlist (settings) {
             console.log("Generating a playlist from " + this.seeds.length + " seeds")
-            console.log(settings)
             get_recommendations(this.seeds, settings).then((playlist) => {
                 this.playlist = playlist
             })
@@ -185,9 +184,6 @@ export default {
 
 <style scoped lang='scss'>
 @import "../scss/_variables";
-.btn-spotify {
-    color: white;
-}
 #hline-search-left {
     background-image: url("../assets/hlines/hline1-left.png");
 }

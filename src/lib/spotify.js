@@ -9,7 +9,7 @@ export const spotify_search = (query, types=['artist', 'track', 'album', 'playli
                 q: query,
                 type: types.join(','),
                 limit: limit,
-                //market: 'from_token'
+                //market: 'from_token' // requires 'user-read-private' scope, but only for search (??)
             },
             headers: {
                 'Authorization': 'Bearer ' + localStorage.access_token
@@ -34,13 +34,16 @@ export const spotify_search = (query, types=['artist', 'track', 'album', 'playli
 
 export const spotify_recommend = (seed_artists, seed_tracks, settings) => {
     return new Promise((resolve, reject) => {
+        let request_params = {
+            market: 'from_token',
+            seed_artists: seed_artists.join(','),
+            seed_tracks: seed_tracks.join(',')
+        }
+        for (let setting in settings) {
+            request_params[setting] = settings[setting]
+        }
         axios.get("https://api.spotify.com/v1/recommendations", {
-            params: {
-                limit: settings.limit,
-                market: 'from_token',
-                seed_artists: seed_artists.join(','),
-                seed_tracks: seed_tracks.join(',')
-            },
+            params: request_params,
             headers: {
                 'Authorization': 'Bearer ' + localStorage.access_token
             }
