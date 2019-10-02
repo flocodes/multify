@@ -2,8 +2,6 @@
 
 ## Fixes
 
-* Remove console.log statements before release
-
 ## New features
 
 * Notify user when max seeds reached
