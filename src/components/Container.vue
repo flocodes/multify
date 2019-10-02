@@ -24,12 +24,18 @@
             </transition-group>
             <p v-if="no_playlist && no_seeds">Add some seeds to generate a playlist.</p>
             <p v-else-if="no_playlist">Generate a playlist from your seeds by clicking the button above.</p>
-            <div class="input-group my-3" v-if="playlist_generated">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Playlist name</span>
+            <form class="form-inline my-3" v-if="playlist_generated">
+                <div class="input-group mr-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Playlist name</span>
+                    </div>
+                    <input type="text" class="form-control" id="playlist_title" hint="Playlist name" v-model="playlist_name">
                 </div>
-                <input type="text" class="form-control" id="playlist_title" hint="Playlist name" value="Multify">
-            </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" v-model="playlist_public" id="playlist-public-check">
+                    <label class="form-check-label" for="playlist-public-check">Public</label>
+                </div>
+            </form>
             <div class="row align-items-center">
                 <div class="col-auto">
                     <button class="btn btn-darkgreen btn-text-white" v-if="playlist_generated" v-on:click="play_playlist">Play on Spotify</button> 
@@ -75,7 +81,9 @@ export default {
             user_id: '',
             playlist_added: false,
             timer: null,
-            play_error: false
+            play_error: false,
+            playlist_name: "Multify",
+            playlist_public: false
         }
     },
     computed: {
@@ -122,17 +130,20 @@ export default {
         },
         add_seed (item) {
             console.log("Adding to seeds: " + item.name + " (" + item.uri + ")")
-            let uri = item.uri
-            if (this.seeds.length > 4) {
-                console.log("Cannot have more than 5 seeds")
-                return
-            }
             for (let seed of this.seeds) {
                 if (item.uri == seed.uri) {
                     console.log(item.uri + " already in seeds")
+                    $("#toast-already-in-seeds").toast("show")
                     return
                 }
             }
+
+            if (this.seeds.length > 4) {
+                console.log("Cannot have more than 5 seeds")
+                $("#toast-too-many-seeds").toast('show')
+                return
+            }
+            
             let seed = {}
             for (let suggestion of this.suggestions) {
                 if (item.uri == suggestion.uri) {
@@ -169,10 +180,10 @@ export default {
             })
         },
         add_to_account (event) {
-            let playlist_name = document.querySelector('#playlist_title').value
+            let playlist_name = this.playlist_name
             if (!playlist_name) playlist_name = 'Multify'
             console.log("Adding this playlist with " + this.playlist.length + " tracks to your account.")
-            add_playlist_to_account(this.playlist, playlist_name, this.seeds).then(() => {
+            add_playlist_to_account(this.playlist, playlist_name, this.seeds, this.playlist_public).then(() => {
                 this.playlist_added = true
             })
         },

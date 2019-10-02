@@ -78,12 +78,12 @@ export const spotify_user_profile = () => {
     })
 }
 
-export const spotify_create_playlist = (user_id, name, description) => {
+export const spotify_create_playlist = (user_id, name, description, _public) => {
     return new Promise((resolve, reject) => {
         axios.post('https://api.spotify.com/v1/users/' + user_id + '/playlists', 
             { 
                 name: name, 
-                public: false, 
+                public: _public, 
                 description: description
             }, {
                 headers: {

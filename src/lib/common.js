@@ -87,7 +87,7 @@ export const get_recommendations = (seeds, settings) => {
     })
 }
 
-export const add_playlist_to_account = (tracks, name, seeds) => {
+export const add_playlist_to_account = (tracks, name, seeds, _public) => {
     return new Promise((resolve, reject) => {
         spotify_user_profile().then((user_profile) => {
             let user_id = user_profile.id
@@ -96,7 +96,12 @@ export const add_playlist_to_account = (tracks, name, seeds) => {
             for (let seed of seeds) {
                 seed_names.push(seed.name)
             }
-            spotify_create_playlist(user_id, name, 'Generated playlist from Multify. Seeds: ' + seed_names.join(', ')).then((playlist_data) => {
+            spotify_create_playlist(
+                user_id,
+                name, 
+                'Generated playlist from Multify. Seeds: ' + seed_names.join(', '), 
+                _public
+                ).then((playlist_data) => {
                 let playlist_id = playlist_data.id
                 console.log("Playlist ID is " + playlist_id)
                 let track_uris = []

@@ -13,7 +13,7 @@
         <div id="footer-hline-right"></div>
       </div>
       <div class="container mb-3">
-        <small>MULTIFY is an <a href="https://github.com/TODO">open source app</a> which runs completely in your browser. We do not store any of your data.</small>
+        <small>MULTIFY is an <a href="https://github.com/flocodes/multify">open source app</a> which runs completely in your browser. We do not store any of your data.</small>
       </div>
     </div>
 </template>
