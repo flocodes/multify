@@ -2,7 +2,7 @@
     <div id="app">
       <div class="flex-container my-5" id="logo-container">
         <div id="logo-left"></div>
-        <img src="./assets/logo.jpg" alt="multify">
+        <img src="./assets/logo.png" alt="multify">
         <div id="logo-right"></div>
       </div>
       <Container v-if="connected"/>
@@ -60,13 +60,13 @@ $theme-colors: (
   background-size: auto 100px;
 }
 #logo-left {
-  background-image: url("./assets/logo-left.jpg");
+  background-image: url("./assets/logo-left.png");
 }
 #logo-container > img {
   max-height: 100px;
 }
 #logo-right {
-  background-image: url("./assets/logo-right.jpg");
+  background-image: url("./assets/logo-right.png");
 }
 .hline-container > div {
   background-size: auto 20px;
