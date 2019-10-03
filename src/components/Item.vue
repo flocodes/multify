@@ -24,7 +24,7 @@
         <div class="row mb-0 px-3">
             <div class="col-auto" style="width:64px;"></div>
             <div class="col" v-if="play_error">
-                <small class="mb-0 text-danger">Cannot play this. Launch Spotify and listen to something, then it should work.</small>
+                <small class="mb-0 text-danger">Cannot play this. <a class="text-danger" :href="item.uri"><b>Launch Spotify</b></a> and listen to something, then it should work.</small>
             </div>
         </div>
     </div>

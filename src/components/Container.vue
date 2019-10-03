@@ -46,7 +46,7 @@
                 <div class="col-auto" v-if="playlist_added || play_error">
                     <p class="mb-0">
                         <small v-if="playlist_added">The playlist was added to your account.</small>
-                        <small class="text-danger" v-else-if="play_error">{{play_error}}</small>
+                        <small class="text-danger" v-else-if="play_error">Cannot play any tracks. <a class="text-danger" :href="play_error"><b>Launch Spotify</b></a> and listen to something, then it should work.</small>
                     </p>
                 </div>
             </div>
@@ -189,9 +189,9 @@ export default {
         },
         play_track (item) {
             spotify_play_tracks([item.uri]).then(() => {
-                this.play_error = ""
+                this.play_error = false
             }).catch(() => {
-                this.play_error = "Cannot play any tracks. Launch Spotify and listen to something, then it should work."
+                this.play_error = item.uri
             })
         },
         play_playlist () {
@@ -200,9 +200,9 @@ export default {
                 track_uris.push(track.uri)
             }
             spotify_play_tracks(track_uris).then(() => {
-                this.play_error = ""
+                this.play_error = false
             }).catch(() => {
-                this.play_error = "Cannot play the playlist. Launch Spotify and listen to something, then it should work."
+                this.play_error = track_uris[0]
             })
         }
     }
