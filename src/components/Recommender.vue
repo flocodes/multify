@@ -155,7 +155,7 @@ export default {
         },
         remove_filter (filter) {
             console.log("Removing filter " + filter.name)
-            this.filters = this.filters.filter((f, index, arr) => {
+            this.filters = this.filters.filter(f => {
                 return f.name != filter.name
             })
         }

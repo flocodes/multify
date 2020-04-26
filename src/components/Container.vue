@@ -37,7 +37,7 @@
             </form>
             <div class="row align-items-center mt-3">
                 <div class="col-auto">
-                    <button class="btn btn-darkgreen btn-text-white" v-if="playlist_generated" v-on:click="play_playlist">Play on Spotify</button> 
+                    <button class="btn btn-darkgreen btn-text-white" v-if="playlist_generated" v-on:click="play_playlist">Play on Spotify</button>
                 </div>
                 <div class="col-auto" v-if="playlist_added || play_error">
                     <p class="mb-0">
@@ -58,7 +58,10 @@
 </template>
 
 <script>
+// Need to import clearTimeout from timers to get the correct function
+/* eslint-disable no-unused-vars */
 import { clearTimeout } from 'timers';
+/* eslint-enable no-unused-vars */
 import Item from './Item.vue'
 import Recommender from './Recommender.vue'
 import {
@@ -147,7 +150,7 @@ export default {
                 console.log("Cannot have more than 5 seeds")
                 return
             }
-            
+
             let seed = {}
             for (let suggestion of this.suggestions) {
                 if (item.uri == suggestion.uri) {
@@ -167,7 +170,7 @@ export default {
         },
         remove_seed (item) {
             console.log("Removing from seeds: " + item.name + " (" + item.uri + ")")
-            let seeds = this.seeds.filter(function (seed, index, arr) {
+            let seeds = this.seeds.filter(function (seed) {
                 return seed.uri != item.uri
             })
             this.seeds = seeds
@@ -183,7 +186,7 @@ export default {
                 this.playlist = playlist
             })
         },
-        add_to_account (event) {
+        add_to_account () {
             let playlist_name = this.playlist_name
             if (!playlist_name) playlist_name = 'Multify'
             console.log("Adding this playlist with " + this.playlist.length + " tracks to your account.")
@@ -197,7 +200,7 @@ export default {
             for (let track of this.playlist) {
                 if (!found_track && track.uri == item.uri) {
                     found_track = true
-                } 
+                }
                 if (found_track) {
                     track_uris.push(track.uri)
                 }

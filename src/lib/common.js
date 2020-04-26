@@ -17,7 +17,7 @@ export const check_spotify_connection = () => {
 }
 
 export const get_suggestions = (query) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         spotify_search(query, ['artist', 'track'], 3).then((results) => {
             let artists = results.artists
             let tracks = results.tracks
@@ -53,7 +53,7 @@ export const get_suggestions = (query) => {
 }
 
 export const get_recommendations = (seeds, settings) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         let seed_artists = []
         let seed_tracks = []
         for (let seed of seeds) {
@@ -88,7 +88,7 @@ export const get_recommendations = (seeds, settings) => {
 }
 
 export const add_playlist_to_account = (tracks, name, seeds, _public) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         spotify_user_profile().then((user_profile) => {
             let user_id = user_profile.id
             console.log("User ID is " + user_id)
@@ -98,8 +98,8 @@ export const add_playlist_to_account = (tracks, name, seeds, _public) => {
             }
             spotify_create_playlist(
                 user_id,
-                name, 
-                'Generated playlist from Multify. Seeds: ' + seed_names.join(', '), 
+                name,
+                'Generated playlist from Multify. Seeds: ' + seed_names.join(', '),
                 _public
                 ).then((playlist_data) => {
                 let playlist_id = playlist_data.id
